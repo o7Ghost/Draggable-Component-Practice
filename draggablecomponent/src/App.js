@@ -1,23 +1,18 @@
-import logo from "./logo.svg";
 import React, { useState, useRef } from "react";
 import "./App.css";
 
-const ArrayElements = ({ ele, selectedEle }) => {
+const ArrayElements = ({ ele, selectedEle, currSelect }) => {
   const eleRef = useRef();
-  const [isSelect, setIsSelected] = useState(false);
-  console.log("what is select", isSelect, ele);
-  const style = isSelect ? { opacity: 0.5 } : { opacity: 1 };
+  const style = currSelect === ele ? { opacity: 0.5 } : { opacity: 1 };
 
   const dragStart = () => {
-    selectedEle.current = ele;
+    selectedEle(ele);
     console.log("dragStart?", ele);
-    setIsSelected(true);
   };
 
   const dragEnd = () => {
-    selectedEle.current = null;
+    selectedEle(null);
     console.log("end?", ele);
-    setIsSelected(false);
   };
 
   return (
@@ -39,45 +34,67 @@ const ArrayElements = ({ ele, selectedEle }) => {
 function App() {
   const [draggableArray1, setDraggableArray1] = useState(["a", "b"]);
   const [draggableArray2, setDraggableArray2] = useState(["c", "d"]);
-  const selectedEle = useRef(null);
+  const [selectedEle, setSelectedEle] = useState(null);
 
   const dragOver = (e) => {
     e.preventDefault();
     const className = e.target.className;
-    const arrayMoveTo = !draggableArray1.includes(selectedEle.current)
+    const arrayMoveTo = !draggableArray1.includes(selectedEle)
       ? draggableArray1
       : draggableArray2;
-    const arrayMoveFrom = draggableArray1.includes(selectedEle.current)
+    const arrayMoveFrom = draggableArray1.includes(selectedEle)
       ? draggableArray1
       : draggableArray2;
 
     if (className.includes("top")) {
-      if (!draggableArray1.includes(selectedEle.current)) {
+      if (!draggableArray1.includes(selectedEle)) {
         setDraggableArray2(
-          arrayMoveFrom.filter((element) => element !== selectedEle.current)
+          arrayMoveFrom.filter((element) => element !== selectedEle)
         );
-        setDraggableArray1([...arrayMoveTo, selectedEle.current]);
+        setDraggableArray1([...arrayMoveTo, selectedEle]);
       }
     } else if (className.includes("bot")) {
-      if (!draggableArray2.includes(selectedEle.current)) {
+      if (!draggableArray2.includes(selectedEle)) {
         setDraggableArray1(
-          arrayMoveFrom.filter((element) => element !== selectedEle.current)
+          arrayMoveFrom.filter((element) => element !== selectedEle)
         );
-        setDraggableArray2([...arrayMoveTo, selectedEle.current]);
+        setDraggableArray2([...arrayMoveTo, selectedEle]);
       }
     }
   };
 
   return (
     <div>
-      <div onDragOver={dragOver} className="container top">
+      <div
+        onDrop={() => {
+          setSelectedEle(null);
+        }}
+        onDragOver={dragOver}
+        className="container top"
+      >
         {draggableArray1.map((ele) => (
-          <ArrayElements selectedEle={selectedEle} key={ele} ele={ele} />
+          <ArrayElements
+            selectedEle={setSelectedEle}
+            currSelect={selectedEle}
+            key={ele}
+            ele={ele}
+          />
         ))}
       </div>
-      <div onDragOver={dragOver} className="container bot">
+      <div
+        onDragOver={dragOver}
+        onDrop={() => {
+          setSelectedEle(null);
+        }}
+        className="container bot"
+      >
         {draggableArray2.map((ele) => (
-          <ArrayElements selectedEle={selectedEle} key={ele} ele={ele} />
+          <ArrayElements
+            selectedEle={setSelectedEle}
+            currSelect={selectedEle}
+            key={ele}
+            ele={ele}
+          />
         ))}
       </div>
     </div>
