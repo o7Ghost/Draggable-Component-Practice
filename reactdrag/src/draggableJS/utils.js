@@ -78,39 +78,10 @@ const calculateDistance = (x1, y1, x2, y2) => {
   return Math.sqrt(distX + distY);
 };
 
-// export const getDragAfterElement = (container, y) => {
-//   // get all elements that not the element your mouse is dragging
-//   const draggableElements = [
-//     ...container.querySelectorAll(".draggable:not(.dragging)"),
-//   ];
-
-//   // for each elements that's not draggable find the closest element that is near mouse hover and return the element
-//   return draggableElements.reduce(
-//     (closest, child) => {
-//       //get box boundries
-//       const box = child.getBoundingClientRect();
-//       //get offset which is the different between your mouse and the middle point of the current container
-//       const offset = y - box.top - box.height / 2;
-//       //less than zero means we are above the middle point of the container
-//       //since going above middle point will result is lesser value we want the closest point to the mid
-//       if (offset < 0 && offset > closest.offset) {
-//         return { offset: offset, element: child };
-//       } else {
-//         return closest;
-//       }
-//     },
-//     {
-//       offset: Number.NEGATIVE_INFINITY,
-//     }
-//   ).element;
-// };
-
 const getDragAfterElement = (closestElement, y) => {
   const box = closestElement.getBoundingClientRect();
-  // console.log(box, closestElement);
   const offset = y - box.top - box.height / 2;
 
-  console.log(closestElement, offset);
   if (offset < 0) {
     return closestElement;
   }
@@ -126,7 +97,6 @@ export const appendDragElement = (containers) =>
       //get the element that your mouse is hovering on (aka about to drop it on to)
 
       //select dragged element since only 1 can exists at a time
-
       const afterElement = getDragAfterElement(
         findCloestElement(container, e.clientX, e.clientY),
         e.clientY
@@ -136,7 +106,8 @@ export const appendDragElement = (containers) =>
 
       if (afterElement == null) {
         //append after current container
-        container.appendChild(draggble);
+        const test = findCloestElement(container, e.clientX, e.clientY);
+        test.after(draggble);
       } else {
         //append before container
         container.insertBefore(draggble, afterElement);
