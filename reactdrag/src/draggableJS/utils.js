@@ -21,49 +21,18 @@ const findCloestElement = (container, x, y) => {
   const draggableElements = [
     ...container.querySelectorAll(".draggable:not(.dragging)"),
   ];
+
   return draggableElements.reduce(
     (closest, child) => {
       const box = child.getBoundingClientRect();
 
-      const topLeftCornerPoint = { x: box.x, y: box.y };
-      const topRightCornerPoint = { x: box.right, y: box.y };
-      const bottomRightCornerPoint = { x: box.right, y: box.bottom };
-      const bottomLeftCornerPoint = { x: box.x, y: box.bottom };
-      const midPoint = {
-        x: box.left + box.width / 2,
-        y: box.top + box.height / 2,
-      };
-
-      const topCornerDist = Math.min(
-        calculateDistance(x, y, topLeftCornerPoint.x, topLeftCornerPoint.y),
-        calculateDistance(x, y, topRightCornerPoint.x, topRightCornerPoint.y)
-      );
-
-      const botCornerDist = Math.min(
-        calculateDistance(
-          x,
-          y,
-          bottomRightCornerPoint.x,
-          bottomRightCornerPoint.y
-        ),
-        calculateDistance(
-          x,
-          y,
-          bottomLeftCornerPoint.x,
-          bottomLeftCornerPoint.y
-        )
-      );
-
-      const dist = Math.min(
-        calculateDistance(x, y, midPoint.x, midPoint.y),
-        Math.min(topCornerDist, botCornerDist)
-      );
+      const dist = calculateDistance(x, y, box.x, box.y);
 
       if (dist < closest.dist) {
         return { dist: dist, element: child };
+      } else {
+        return closest;
       }
-
-      return closest;
     },
     {
       dist: Number.POSITIVE_INFINITY,
@@ -76,6 +45,17 @@ const calculateDistance = (x1, y1, x2, y2) => {
   const distY = Math.pow(y2 - y1, 2);
 
   return Math.sqrt(distX + distY);
+};
+
+const directionOfPointFromElement = (closestElement, x, y) => {
+  const box = closestElement.getBoundingClientRect();
+  console.log(box, x, y, closestElement);
+  const topLine = { x1: box.x, y1: box.y, x2: box.x, y2: box.right };
+  const directionTopLine =
+    (x - topLine.x1) * (topLine.y2 - topLine.y1) -
+    (y - topLine.y2) * (topLine.x2 - topLine.x1);
+
+  // console.log(directionTopLine);
 };
 
 const getDragAfterElement = (closestElement, y) => {
@@ -92,25 +72,26 @@ const getDragAfterElement = (closestElement, y) => {
 export const appendDragElement = (containers) =>
   containers.forEach((container) => {
     container.addEventListener("dragover", (e) => {
-      //disable not draggable animation inside draggable containers and gives a snip on animation
       e.preventDefault();
-      //get the element that your mouse is hovering on (aka about to drop it on to)
 
-      //select dragged element since only 1 can exists at a time
-      const afterElement = getDragAfterElement(
-        findCloestElement(container, e.clientX, e.clientY),
-        e.clientY
-      );
+      const closestElement = findCloestElement(container, e.clientX, e.clientY);
+      console.log(closestElement);
+      // directionOfPointFromElement(closestElement, e.clientX, e.clientY);
 
-      const draggble = document.querySelector(".dragging");
+      // const afterElement = getDragAfterElement(
+      //   findCloestElement(container, e.clientX, e.clientY),
+      //   e.clientY
+      // );
 
-      if (afterElement == null) {
-        //append after current container
-        const test = findCloestElement(container, e.clientX, e.clientY);
-        test.after(draggble);
-      } else {
-        //append before container
-        container.insertBefore(draggble, afterElement);
-      }
+      // const draggble = document.querySelector(".dragging");
+
+      // if (afterElement == null) {
+      //   //append after current container
+      //   const test = findCloestElement(container, e.clientX, e.clientY);
+      //   test.after(draggble);
+      // } else {
+      //   //append before container
+      //   container.insertBefore(draggble, afterElement);
+      // }
     });
   });
