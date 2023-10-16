@@ -10,7 +10,7 @@ import React, { useEffect } from "react";
 
 const gridElements = [
   { id: "a", content: "A", size: 1 },
-  { id: "b", content: "B", size: 1 },
+  { id: "b", content: "B", size: 2 },
   { id: "c", content: "C", size: 3 },
 ];
 

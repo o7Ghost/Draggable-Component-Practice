@@ -22,13 +22,15 @@ const findCloestElement = (container, x, y) => {
     ...container.querySelectorAll(".draggable:not(.dragging)"),
   ];
 
+  // console.log("-----------------------");
   return draggableElements.reduce(
     (closest, child) => {
       const box = child.getBoundingClientRect();
 
       const dist = calculateDistance(x, y, box.x, box.y);
-
+      // console.log(box, child, dist);
       if (dist < closest.dist) {
+        // console.log(dist, closest.dist, child);
         return { dist: dist, element: child };
       } else {
         return closest;
@@ -60,17 +62,16 @@ const determineAppendLocation = (element, x, y) => {
 
   const bottomLine = (x - box.x) * 0 - (y - box.bottom) * (box.x - box.right);
 
-  let appendDirection = "NONE";
-
+  // console.log(appendDirection, element);
   if (topLine > 0 || leftLine > 0) {
-    appendDirection = "BEFORE";
+    return "BEFORE";
   }
 
   if (rightLine > 0 || bottomLine > 0) {
-    appendDirection = "AFTER";
+    return "AFTER";
   }
 
-  return appendDirection;
+  return "NONE";
 };
 
 export const appendDragElement = (containers) =>
