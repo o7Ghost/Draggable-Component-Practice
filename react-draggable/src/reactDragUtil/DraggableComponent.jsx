@@ -16,22 +16,8 @@ const DraggableComponent = ({ children }) => {
     setPosition(onStartPosition);
   };
 
-  const onDrag = (event) => {
+  const onDragOver = (event) => {
     event.preventDefault();
-    const mouseX = event.clientX;
-    const mouseY = event.clientY;
-    const deltaX = mouseX - position.mouseLastX;
-    const deltaY = mouseY - position.mouseLastY;
-
-    console.log("hi?", mouseX, mouseY);
-
-    const newPosition = {
-      x: position.x + deltaX,
-      y: position.y + deltaY,
-      mouseLastX: mouseX,
-      mouseLastY: mouseY,
-    };
-    setPosition(newPosition);
 
     // console.log("drag", newPosition);
   };
@@ -48,11 +34,30 @@ const DraggableComponent = ({ children }) => {
     };
   };
 
+  const onDrag = (event) => {
+    const mouseX = event.clientX;
+    const mouseY = event.clientY;
+    const deltaX = mouseX - position.mouseLastX;
+    const deltaY = mouseY - position.mouseLastY;
+
+    console.log("hi?", mouseX, mouseY);
+
+    const newPosition = {
+      x: position.x + deltaX,
+      y: position.y + deltaY,
+      mouseLastX: mouseX,
+      mouseLastY: mouseY,
+    };
+    setPosition(newPosition);
+    console.log("what is event?", event.clientX);
+  };
+
   const element = cloneElement(children, {
     draggable,
     onDragStart: onDragStart,
-    onDragOver: onDrag,
+    onDragOver: onDragOver,
     onDragEnd: onDragStop,
+    onDrag: onDrag,
     style: { ...createTransform(), ...children.props.style },
   });
 
