@@ -5,7 +5,7 @@ function App() {
   return (
     <div>
       <DraggableComponent>
-        <div>Draggable Component</div>
+        <div style={{ width: "100px" }}>Draggable Component</div>
       </DraggableComponent>
     </div>
   );
