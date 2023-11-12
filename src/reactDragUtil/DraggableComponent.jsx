@@ -7,8 +7,6 @@ import React, {
 } from "react";
 
 const DraggableComponent = ({ children }) => {
-  const thisElement = useRef(null);
-
   const [position, setPosition] = useState({
     x: 0,
     y: 0,
@@ -30,13 +28,13 @@ const DraggableComponent = ({ children }) => {
     dataRef.current = onStartPosition;
     setPosition(onStartPosition);
 
-    thisElement.current.addEventListener("mousemove", onDrag, {
+    document.addEventListener("mousemove", onDrag, {
       capture: true,
     });
   };
 
   const onDragStop = () => {
-    thisElement.current.removeEventListener("mousemove", onDrag, {
+    document.removeEventListener("mousemove", onDrag, {
       capture: true,
     });
   };
@@ -66,7 +64,6 @@ const DraggableComponent = ({ children }) => {
   }, []);
 
   const element = cloneElement(children, {
-    ref: thisElement,
     onMouseDown: onDragStart,
     onMouseUp: onDragStop,
     style: { ...createTransform(), ...children.props.style },

@@ -7,6 +7,9 @@ function App() {
       <DraggableComponent>
         <div style={{ width: "100px" }}>Draggable Component</div>
       </DraggableComponent>
+      <DraggableComponent>
+        <div style={{ width: "100px" }}>Draggable Component 2</div>
+      </DraggableComponent>
     </div>
   );
 }
